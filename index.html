@@ -15,7 +15,7 @@
 <section class="hero">
   <div class="eyebrow"><span class="pulse"></span> GROWTH MARKET · TELEGRAM</div>
   <h1>Подписчики для<br><span>твоего канала.</span></h1>
-  <p class="hero-copy">Выбери подходящий вариант, укажи количество и оставь заявку. Перед запуском согласуем источник аудитории и условия.</p>
+  <p class="hero-copy">Выбери категорию, вставь ссылку на открытый канал и укажи нужное количество. Стоимость появится автоматически.</p>
   <a class="primary-btn" href="#catalog">Выбрать подписчиков <span>→</span></a>
   <div class="hero-note">Без регистрации · Заказ онлайн</div>
 </section>
@@ -28,20 +28,26 @@
    <h3>Обычные подписчики Telegram</h3>
    <p>Привлечение пользователей без обещания просмотров или реакций. Состав и источник аудитории подтверждаются до оплаты.</p>
    <div class="price"><strong>100 ₽</strong><span>за 100 подписчиков</span></div>
-   <label class="qty-label" for="qty-basic">Количество</label>
+   <label class="qty-label" for="channel-basic">Ссылка на открытый Telegram-канал</label>
+   <input class="card-input" id="channel-basic" type="url" placeholder="https://t.me/channelname" autocomplete="url">
+   <label class="qty-label" for="qty-basic">Количество подписчиков</label>
    <div class="qty-row"><input id="qty-basic" type="number" min="100" max="100000" step="100" value="100"><span>чел.</span></div>
-   <div class="total">Стоимость <strong id="total-basic">100 ₽</strong></div>
-   <button class="outline-btn pick" data-type="Обычные подписчики Telegram">Выбрать <span>→</span></button>
+   <div class="total">Итого к оплате <strong id="total-basic">100 ₽</strong></div>
+   <button class="outline-btn order-btn" data-type="Обычные подписчики Telegram" data-rate="100" data-channel="channel-basic" data-qty="qty-basic" data-result="result-basic">Заказать <span>→</span></button>
+   <p class="card-result" id="result-basic" aria-live="polite"></p>
   </article>
   <article class="service-card featured">
    <div class="card-icon">✧</div><div class="tag">КАТЕГОРИЯ 02</div>
    <h3>Живые подписчики Telegram</h3>
    <p>Привлечение реальных пользователей, которые могут самостоятельно просматривать публикации и взаимодействовать с каналом.</p>
    <div class="price"><strong>300 ₽</strong><span>за 100 подписчиков</span></div>
-   <label class="qty-label" for="qty-live">Количество</label>
+   <label class="qty-label" for="channel-live">Ссылка на открытый Telegram-канал</label>
+   <input class="card-input" id="channel-live" type="url" placeholder="https://t.me/channelname" autocomplete="url">
+   <label class="qty-label" for="qty-live">Количество подписчиков</label>
    <div class="qty-row"><input id="qty-live" type="number" min="100" max="100000" step="100" value="100"><span>чел.</span></div>
-   <div class="total">Стоимость <strong id="total-live">300 ₽</strong></div>
-   <button class="outline-btn pick" data-type="Живые подписчики Telegram">Выбрать <span>→</span></button>
+   <div class="total">Итого к оплате <strong id="total-live">300 ₽</strong></div>
+   <button class="outline-btn order-btn" data-type="Живые подписчики Telegram" data-rate="300" data-channel="channel-live" data-qty="qty-live" data-result="result-live">Заказать <span>→</span></button>
+   <p class="card-result" id="result-live" aria-live="polite"></p>
   </article>
  </div>
  <div class="specs">
@@ -51,22 +57,6 @@
   <div><span>ГАРАНТИЯ</span><strong>Нет</strong></div>
  </div>
  <p class="fineprint">* Указанные скорость и срок — ориентиры, а не гарантированные показатели. Точные условия подтверждаются до оплаты.</p>
-</section>
-
-<section class="section order-section" id="order">
- <div class="section-head"><div><div class="eyebrow">ОФОРМЛЕНИЕ</div><h2>Оставить заявку</h2></div><p>Регистрация не требуется.</p></div>
- <form class="order-card" id="orderForm">
-  <label>Категория<select id="category"><option>Обычные подписчики Telegram</option><option>Живые подписчики Telegram</option></select></label>
-  <label>Количество<input id="quantity" type="number" min="100" max="100000" step="100" value="100" required></label>
-  <div class="total">Предварительная стоимость <strong id="order-total">100 ₽</strong></div>
-  <label>Ссылка на открытый Telegram-канал<input id="channel" type="url" placeholder="https://t.me/channelname" required></label>
-  <label>Контакт для связи<input id="contact" type="text" placeholder="@username" required></label>
-  <label>Комментарий <span class="optional">необязательно</span><textarea id="comment" rows="3" placeholder="Дополнительная информация"></textarea></label>
-  <label class="check"><input type="checkbox" id="agree" required><span>Я ознакомился(лась) с условиями заказа и понимаю, что фактические результаты могут отличаться от ориентиров.</span></label>
-  <button class="primary-btn submit-btn" type="submit">Сформировать заявку <span>→</span></button>
-  <p class="form-hint">Демонстрационный режим: заявка не отправляется и не сохраняется на сервере. Оплата не подключена.</p>
-  <div id="result" class="result" aria-live="polite"></div>
- </form>
 </section>
 
 <section class="section terms">
