@@ -69,14 +69,54 @@ export default async function handler(req, res) {
     const chatId = process.env.TELEGRAM_CHAT_ID;
     if (botToken && chatId) {
       try {
+        // Register the webhook automatically. The URL key is derived from the bot token,
+        // so no additional public secret or manual Telegram setup is required.
+        const { createHash } = await import('node:crypto');
+        const webhookKey = createHash('sha256').update(botToken).digest('hex');
+        const baseUrl = process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : process.env.NEXT_PUBLIC_SITE_URL;
+
+        let webhookReady = false;
+        if (baseUrl) {
+          const webhookResponse = await fetch(`https://api.telegram.org/bot${botToken}/setWebhook`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              url: `${baseUrl}/api/telegram-webhook?key=${webhookKey}`,
+              allowed_updates: ['callback_query']
+            })
+          });
+          const webhookResult = await webhookResponse.json().catch(() => ({}));
+          webhookReady = webhookResult.ok === true;
+          if (!webhookReady) console.error('Telegram webhook setup failed:', webhookResult);
+        } else {
+          console.error('Missing VERCEL_URL for Telegram webhook setup');
+        }
+
         const tgResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: chatId, text: message, disable_web_page_preview: true })
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            disable_web_page_preview: true,
+            ...(webhookReady ? {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '🔄 В обработку', callback_data: `gm:${order.order_number}:processing` },
+                    { text: '✅ Выполнен', callback_data: `gm:${order.order_number}:completed` }
+                  ],
+                  [
+                    { text: '❌ Отменить', callback_data: `gm:${order.order_number}:cancelled` }
+                  ]
+                ]
+              }
+            } : {})
+          })
         });
-        if (!tgResponse.ok) {
-          console.error('Telegram notification failed:', tgResponse.status);
-        }
+        if (!tgResponse.ok) console.error('Telegram notification failed:', tgResponse.status);
       } catch (telegramError) {
         console.error('Telegram notification error:', telegramError);
       }
