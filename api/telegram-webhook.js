@@ -145,7 +145,9 @@ export default async function handler(req, res) {
       message_id: callbackMessage.message_id,
       text,
       disable_web_page_preview: true,
-      reply_markup: keyboard(order.order_number)
+      reply_markup: ['completed', 'cancelled'].includes(order.status)
+        ? { inline_keyboard: [] }
+        : keyboard(order.order_number)
     });
 
     if (!edit.ok) console.error('Telegram message edit failed:', edit);
