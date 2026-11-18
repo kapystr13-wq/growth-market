@@ -1,33 +1,13 @@
-const serviceSelect = document.getElementById('service');
-document.querySelectorAll('.choose-service').forEach(button => {
-  button.addEventListener('click', () => {
-    serviceSelect.value = button.dataset.service;
-    document.getElementById('order').scrollIntoView({behavior:'smooth'});
-  });
-});
-document.getElementById('orderForm').addEventListener('submit', event => {
-  event.preventDefault();
-  const channel = document.getElementById('channel').value.trim();
-  const contact = document.getElementById('contact').value.trim();
-  const result = document.getElementById('result');
-  if (!/^https:\/\/t\.me\/[A-Za-z0-9_]+\/?$/.test(channel)) {
-    result.textContent = 'Укажи корректную публичную ссылку вида https://t.me/channelname';
-    return;
-  }
-  const id = 'GM-' + Math.random().toString(36).slice(2,8).toUpperCase();
-  const text = [
-    'Заявка ' + id,
-    'Услуга: ' + serviceSelect.value,
-    'Канал: ' + channel,
-    'Бюджет: ' + document.getElementById('budget').value,
-    'Контакт: ' + contact,
-    'Комментарий: ' + (document.getElementById('comment').value || '—')
-  ].join('\\n');
-  result.textContent = 'Черновик заявки ' + id + ' сформирован. Это демонстрация: данные не отправлены и не сохранены.';
-  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = id + '.txt';
-  link.click();
-  URL.revokeObjectURL(link.href);
-});
+const rates = {'Обычные подписчики Telegram':100,'Живые подписчики Telegram':300};
+const basic = document.getElementById('qty-basic');
+const live = document.getElementById('qty-live');
+const category = document.getElementById('category');
+const quantity = document.getElementById('quantity');
+function validQty(el){let n=Math.round(Number(el.value||100)/100)*100;n=Math.min(100000,Math.max(100,n));el.value=n;return n;}
+function price(n,rate){return (n/100*rate).toLocaleString('ru-RU')+' ₽';}
+function update(){document.getElementById('total-basic').textContent=price(validQty(basic),100);document.getElementById('total-live').textContent=price(validQty(live),300);quantity.value=validQty(quantity);document.getElementById('order-total').textContent=price(Number(quantity.value),rates[category.value]);}
+[basic,live,quantity].forEach(el=>el.addEventListener('change',update));
+category.addEventListener('change',update);
+document.querySelectorAll('.pick').forEach(btn=>btn.addEventListener('click',()=>{category.value=btn.dataset.type;quantity.value=btn.dataset.type.startsWith('Живые')?live.value:basic.value;update();document.getElementById('order').scrollIntoView({behavior:'smooth'});}));
+document.getElementById('orderForm').addEventListener('submit',e=>{e.preventDefault();const link=document.getElementById('channel').value.trim();if(!/^https:\/\/t\.me\/[A-Za-z0-9_]+\/?$/.test(link)){document.getElementById('result').textContent='Укажи корректную публичную ссылку вида https://t.me/channelname';return;}const id='GM-'+Math.random().toString(36).slice(2,8).toUpperCase();document.getElementById('result').textContent='Черновик '+id+' сформирован. Это демо: заявка не отправлена, оплата не подключена.';});
+update();
