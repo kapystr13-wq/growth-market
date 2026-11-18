@@ -73,9 +73,8 @@ export default async function handler(req, res) {
         // so no additional public secret or manual Telegram setup is required.
         const { createHash } = await import('node:crypto');
         const webhookKey = createHash('sha256').update(botToken).digest('hex');
-        const baseUrl = process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}`
-          : process.env.NEXT_PUBLIC_SITE_URL;
+        const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+        const baseUrl = productionHost ? `https://${productionHost}` : process.env.NEXT_PUBLIC_SITE_URL;
 
         let webhookReady = false;
         if (baseUrl) {
