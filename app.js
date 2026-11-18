@@ -1,34 +1,33 @@
-const form = document.getElementById("orderForm");
-const result = document.getElementById("formResult");
-document.querySelectorAll("[data-service]").forEach((link) => {
-  link.addEventListener("click", () => {
-    const select = document.getElementById("service");
-    select.value = link.dataset.service;
+const serviceSelect = document.getElementById('service');
+document.querySelectorAll('.choose-service').forEach(button => {
+  button.addEventListener('click', () => {
+    serviceSelect.value = button.dataset.service;
+    document.getElementById('order').scrollIntoView({behavior:'smooth'});
   });
 });
-form.addEventListener("submit", (event) => {
+document.getElementById('orderForm').addEventListener('submit', event => {
   event.preventDefault();
-  const channel = document.getElementById("channel").value.trim();
-  const service = document.getElementById("service").value;
-  const budget = document.getElementById("budget").value;
-  const contact = document.getElementById("contact").value.trim();
-  if (!channel || !service || !budget || !contact) return;
-  const orderId = "GM-" + Math.floor(100000 + Math.random() * 900000);
-  result.textContent = `Демо-заявка ${orderId} сформирована. Сейчас она существует только в вашем браузере: сервер, отправка заявок и оплата ещё не подключены.`;
-  result.classList.add("show");
-  form.querySelector("button").textContent = "Заявка сформирована ✓";
-});
-const menu = document.querySelector(".menu-toggle");
-menu.addEventListener("click", () => {
-  const nav = document.querySelector(".topbar nav");
-  const shown = nav.style.display === "flex";
-  nav.style.display = shown ? "none" : "flex";
-  nav.style.position = "absolute";
-  nav.style.top = "72px";
-  nav.style.right = "0";
-  nav.style.padding = "18px";
-  nav.style.background = "#151d31";
-  nav.style.border = "1px solid #ffffff22";
-  nav.style.borderRadius = "12px";
-  nav.style.flexDirection = "column";
+  const channel = document.getElementById('channel').value.trim();
+  const contact = document.getElementById('contact').value.trim();
+  const result = document.getElementById('result');
+  if (!/^https:\/\/t\.me\/[A-Za-z0-9_]+\/?$/.test(channel)) {
+    result.textContent = 'Укажи корректную публичную ссылку вида https://t.me/channelname';
+    return;
+  }
+  const id = 'GM-' + Math.random().toString(36).slice(2,8).toUpperCase();
+  const text = [
+    'Заявка ' + id,
+    'Услуга: ' + serviceSelect.value,
+    'Канал: ' + channel,
+    'Бюджет: ' + document.getElementById('budget').value,
+    'Контакт: ' + contact,
+    'Комментарий: ' + (document.getElementById('comment').value || '—')
+  ].join('\\n');
+  result.textContent = 'Черновик заявки ' + id + ' сформирован. Это демонстрация: данные не отправлены и не сохранены.';
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = id + '.txt';
+  link.click();
+  URL.revokeObjectURL(link.href);
 });
